@@ -120,7 +120,9 @@ const Workspace: VFC = () => {
     setShowCreateChannelModal(true);
   }, []);
 
-  const onClickInviteWorkspace = useCallback(() => {}, []);
+  const onClickInviteWorkspace = useCallback(() => {
+    setShowInviteWorkspaceModal(true);
+  }, []);
 
   if (!userData) {
     return <Redirect to="/login" />;
@@ -167,8 +169,8 @@ const Workspace: VFC = () => {
                 <button onClick={onLogout}>로그아웃</button>
               </WorkspaceModal>
             </Menu>
-            {/* <ChannelList userData={userData} /> */}
-            <DMList userData={userData} />
+            <ChannelList />
+            <DMList />
           </MenuScroll>
         </Channels>
         <Chats>

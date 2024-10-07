@@ -3,17 +3,20 @@
 import { CollapseButton } from '@components/DMList/styles';
 import { IDM, IUser, IUserWithOnline } from '@typings/db';
 import fetcher from '@utils/fetcher';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { VFC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import useSWR from 'swr';
 
-interface Props {
-  userData?: IUser;
-}
-
-const DMList: FC<Props> = ({ userData }) => {
+const DMList: VFC = () => {
   const { workspace } = useParams<{ workspace?: string }>();
+  const {
+    data: userData,
+    error,
+    mutate,
+  } = useSWR<IUser>('/api/users', fetcher, {
+    dedupingInterval: 2000,
+  });
   const { data: memberData } = useSWR<IUserWithOnline[]>(
     userData ? `/api/workspaces/${workspace}/members` : null,
     fetcher,
