@@ -1,3 +1,12 @@
 {
-  "extends": ["plugin:prettier/recommended", "react-app"]
+  "extends": ["plugin:prettier/recommended", "react-app"],
+  "rules": {
+    // rules에 다음과 같이 추가
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ]
+  }
 }
