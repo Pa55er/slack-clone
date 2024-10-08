@@ -62,10 +62,16 @@ const Workspace: VFC = () => {
   const [socket, disconnect] = useSocket(workspace);
 
   useEffect(() => {
-    socket.on('message');
-    socket.emit();
-    disconnect();
-  }, [socket]);
+    if (channelData && userData && socket) {
+      socket.emit('login', { id: userData.id, channels: channelData.map((v) => v.id) });
+    }
+  }, [socket, channelData, userData]);
+
+  useEffect(() => {
+    return () => {
+      disconnect();
+    };
+  }, [workspace, disconnect]);
 
   const onLogout = useCallback(() => {
     axios
@@ -211,11 +217,11 @@ const Workspace: VFC = () => {
         onCloseModal={onCloseModal}
         setShowInviteWorkspaceModal={setShowInviteWorkspaceModal}
       />
-      <InviteChannelModal
+      {/* <InviteChannelModal
         show={showInviteChannelModal}
         onCloseModal={onCloseModal}
         setShowInviteChannelModal={setShowInviteChannelModal}
-      />
+      /> */}
     </div>
   );
 };
