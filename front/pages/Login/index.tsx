@@ -24,7 +24,7 @@ const Login = () => {
           },
         )
         .then((response) => {
-          mutate(response.data, false);
+          mutate();
         })
         .catch((error) => {
           setLogInError(error.response?.status === 401);
