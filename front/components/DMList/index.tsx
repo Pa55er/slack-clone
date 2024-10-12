@@ -1,11 +1,10 @@
-// import EachDM from '@components/EachDM';
 import { CollapseButton } from '@components/DMList/styles';
+import EachDM from '@components/EachDM';
 import useSocket from '@hooks/useSocket';
-import { IDM, IUser, IUserWithOnline } from '@typings/db';
+import { IUser, IUserWithOnline } from '@typings/db';
 import fetcher from '@utils/fetcher';
 import React, { VFC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
-import { NavLink } from 'react-router-dom';
 import useSWR from 'swr';
 
 const DMList: VFC = () => {
@@ -23,39 +22,15 @@ const DMList: VFC = () => {
   );
   const [socket] = useSocket(workspace);
   const [channelCollapse, setChannelCollapse] = useState(false);
-  const [countList, setCountList] = useState<{ [key: string]: number }>({});
   const [onlineList, setOnlineList] = useState<number[]>([]);
 
   const toggleChannelCollapse = useCallback(() => {
     setChannelCollapse((prev) => !prev);
   }, []);
 
-  const resetCount = useCallback(
-    (id) => () => {
-      setCountList((list) => {
-        return {
-          ...list,
-          [id]: 0,
-        };
-      });
-    },
-    [],
-  );
-
-  const onMessage = (data: IDM) => {
-    console.log('dm 왔다', data);
-    setCountList((list) => {
-      return {
-        ...list,
-        [data.SenderId]: list[data.SenderId] ? list[data.SenderId] + 1 : 1,
-      };
-    });
-  };
-
   useEffect(() => {
     console.log('DMList: workspace 바꼈다', workspace);
     setOnlineList([]);
-    setCountList({});
   }, [workspace]);
 
   useEffect(() => {
@@ -87,29 +62,7 @@ const DMList: VFC = () => {
         {!channelCollapse &&
           memberData?.map((member) => {
             const isOnline = onlineList.includes(member.id);
-            const count = countList[member.id] || 0;
-            return (
-              <NavLink
-                key={member.id}
-                activeClassName="selected"
-                to={`/workspace/${workspace}/dm/${member.id}`}
-                onClick={resetCount(member.id)}
-              >
-                <i
-                  className={`c-icon p-channel_sidebar__presence_icon p-channel_sidebar__presence_icon--dim_enabled c-presence ${
-                    isOnline ? 'c-presence--active c-icon--presence-online' : 'c-icon--presence-offline'
-                  }`}
-                  aria-hidden="true"
-                  data-qa="presence_indicator"
-                  data-qa-presence-self="false"
-                  data-qa-presence-active="false"
-                  data-qa-presence-dnd="false"
-                />
-                <span className={count && count > 0 ? 'bold' : undefined}>{member.nickname}</span>
-                {member.id === userData?.id && <span> (나)</span>}
-                {(count && count > 0 && <span className="count">{count}</span>) || null}
-              </NavLink>
-            );
+            return <EachDM key={member.id} member={member} isOnline={isOnline} />;
           })}
       </div>
     </>

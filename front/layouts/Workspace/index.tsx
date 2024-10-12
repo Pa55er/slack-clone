@@ -30,7 +30,6 @@ import Modal from '@components/Modal';
 import { toast } from 'react-toastify';
 import CreateChannelModal from '@components/CreateChannelModal';
 import InviteWorkspaceModal from '@components/InviteWorkspaceModal';
-import InviteChannelModal from '@components/InviteChannelModal';
 import ChannelList from '@components/ChannelList';
 import DMList from '@components/DMList';
 import useSocket from '@hooks/useSocket';
@@ -44,7 +43,6 @@ const Workspace: VFC = () => {
   const [showWorkspaceModal, setShowWorkspaceModal] = useState(false);
   const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
   const [showInviteWorkspaceModal, setShowInviteWorkspaceModal] = useState(false);
-  const [showInviteChannelModal, setShowInviteChannelModal] = useState(false);
   const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput('');
   const [newUrl, onChangeNewUrl, setNewUrl] = useInput('');
 
@@ -58,7 +56,6 @@ const Workspace: VFC = () => {
     dedupingInterval: 2000,
   });
   const { data: channelData } = useSWR<IChannel[]>(userData ? `/api/workspaces/${workspace}/channels` : null, fetcher);
-  const { data: memberData } = useSWR<IUser[]>(userData ? `/api/workspaces/${workspace}/members` : null, fetcher);
   const [socket, disconnect] = useSocket(workspace);
 
   useEffect(() => {
@@ -123,7 +120,6 @@ const Workspace: VFC = () => {
     setShowCreateWorkspaceModal(false);
     setShowCreateChannelModal(false);
     setShowInviteWorkspaceModal(false);
-    setShowInviteChannelModal(false);
   }, []);
 
   const toggleWorkspaceModal = useCallback(() => {
@@ -217,11 +213,6 @@ const Workspace: VFC = () => {
         onCloseModal={onCloseModal}
         setShowInviteWorkspaceModal={setShowInviteWorkspaceModal}
       />
-      {/* <InviteChannelModal
-        show={showInviteChannelModal}
-        onCloseModal={onCloseModal}
-        setShowInviteChannelModal={setShowInviteChannelModal}
-      /> */}
     </div>
   );
 };
